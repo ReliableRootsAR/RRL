@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Navigate to U4 Website and Click Home Button</title>
+    <title>Navigate to U4 Website and Search for Ticket</title>
     <script type="text/javascript">
         function getQueryParam(param) {
             var urlParams = new URLSearchParams(window.location.search);
@@ -36,7 +36,25 @@
 
         function searchForTicket() {
             console.log("Interacting with search bar...");
-            // Add further search logic here
+            var ticketId = getQueryParam('ticketId');
+            var initialSearchButton = document.querySelector('#quick-search-root > button > div > p');
+            console.log("Initial Search Button Found:", initialSearchButton != null);
+            if (initialSearchButton) {
+                initialSearchButton.click();
+                setTimeout(function() {
+                    var searchField = document.querySelector('#Request\\ \\#');
+                    console.log("Search Field Found:", searchField != null);
+                    if (searchField) {
+                        searchField.value = ticketId;
+                        searchField.dispatchEvent(new Event('input', { bubbles: true }));
+                        var searchButton = document.querySelector('#cdk-overlay-7 > form > div > div.box-border.flex.flex-row.justify-between.items-center.w-full.pb-\\[10px\\].lg\\:pb-\\[30px\\].px-\\[12px\\].sm\\:px-\\[25px\\] > div.flex.flex-row.gap-3.sm\\:gap-6.flex-grow.justify-end.items-center > button.flex.justify-center.items-center.sm\\:w-\\[132px\\].w-\\[112px\\].h-\\[35px\\].appearance-none.rounded.border-solid.border-2.border-primary.bg-primary.p-0.cursor-pointer.hover\\:bg-gray-500.hover\\:border-gray-500.text-white.font-rajdhani.font-semibold.uppercase');
+                        console.log("Search Button Found:", searchButton != null);
+                        if (searchButton) {
+                            searchButton.click();
+                        }
+                    }
+                }, 5000); // Adjust timeout as needed to wait for the search field to appear
+            }
         }
 
         window.onload = function() {

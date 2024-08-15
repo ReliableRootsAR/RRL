@@ -9,6 +9,7 @@
         }
 
         function searchTicket(ticketId) {
+            console.log("Ticket ID:", ticketId);
             var initialSearchButton = document.querySelector('#quick-search-root > button > div > p');
             if (initialSearchButton) {
                 initialSearchButton.click();
@@ -22,18 +23,22 @@
                             searchButton.click();
                         }
                     }
-                }, 1000); // Adjust timeout as needed to wait for the search field to appear
+                }, 5000); // Adjust timeout to 5 seconds
             }
         }
 
         window.onload = function() {
             var ticketId = getQueryParam('ticketId');
+            console.log("Loaded ticket ID:", ticketId);
             if (ticketId) {
                 searchTicket(ticketId);
+            } else {
+                document.body.innerHTML = "<h1>No ticket ID found in URL</h1>";
             }
         }
     </script>
 </head>
 <body>
+    <h1>Loading...</h1>
 </body>
 </html>

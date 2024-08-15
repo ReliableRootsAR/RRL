@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Navigate to U4 Website and Click Home Button</title>
+    <script type="text/javascript">
+        function getQueryParam(param) {
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function checkForLocationPermission() {
+            console.log("Checking for location permission prompt...");
+            var allowButton = document.querySelector('button[aria-label="Allow"]');
+            if (allowButton) {
+                console.log("Allow Button Found, clicking...");
+                allowButton.click();
+                setTimeout(clickHomeButton, 3000);
+            } else {
+                console.log("Location permission prompt not found, retrying...");
+                setTimeout(checkForLocationPermission, 1000);
+            }
+        }
+
+        function clickHomeButton() {
+            console.log("Clicking home button...");
+            var homeButton = document.querySelector('#Layer_1');
+            console.log("Home Button Found:", homeButton != null);
+            if (homeButton) {
+                homeButton.click();
+                setTimeout(searchForTicket, 3000); // Proceed to search for the ticket
+            } else {
+                console.log("Home button not found, retrying...");
+                setTimeout(clickHomeButton, 1000);
+            }
+        }
+
+        function searchForTicket() {
+            console.log("Interacting with search bar...");
+            // Add further search logic here
+        }
+
+        window.onload = function() {
+            var ticketId = getQueryParam('ticketId');
+            console.log("Loaded ticket ID:", ticketId);
+            if (ticketId) {
+                console.log("Redirecting to U4ia.cloud login page...");
+                window.location.href = 'https://www.u4ia.cloud/';
+                setTimeout(checkForLocationPermission, 7000); // Wait for the login and redirection to complete
+            } else {
+                document.body.innerHTML = "<h1>No ticket ID found in URL</h1>";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Loading U4ia website...</h1>
+</body>
+</html>

@@ -8,6 +8,16 @@
             return urlParams.get(param);
         }
 
+        function logAndRetry(fn, delay, retries) {
+            console.log(`Attempting ${fn.name}, retries left: ${retries}`);
+            if (retries > 0) {
+                fn();
+                setTimeout(() => logAndRetry(fn, delay, retries - 1), delay);
+            } else {
+                console.log(`Failed to complete ${fn.name} after multiple attempts.`);
+            }
+        }
+
         function checkForLocationPermission() {
             console.log("Checking for location permission prompt...");
             var allowButton = document.querySelector('button[aria-label="Allow"]');
@@ -76,7 +86,7 @@
             if (ticketId) {
                 console.log("Redirecting to U4ia.cloud login page...");
                 window.location.href = 'https://www.u4ia.cloud/';
-                setTimeout(checkForLocationPermission, 7000); // Wait for the login and redirection to complete
+                setTimeout(checkForLocationPermission, 10000); // Wait for the login and redirection to complete
             } else {
                 document.body.innerHTML = "<h1>No ticket ID found in URL</h1>";
             }

@@ -1,69 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Search Ticket</title>
+    <title>Navigate to U4 Website</title>
     <script type="text/javascript">
-        function getQueryParam(param) {
-            var urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
-
-        function navigateToHomePage() {
-            console.log("Navigating to home page...");
-            var homeButton = document.querySelector('#Layer_1');
-            console.log("Home Button Found:", homeButton != null);
-            if (homeButton) {
-                homeButton.click();
-            } else {
-                console.log("Home button not found, retrying...");
-                setTimeout(navigateToHomePage, 1000);
-            }
-        }
-
-        function searchTicket(ticketId) {
-            console.log("Ticket ID:", ticketId);
-            setTimeout(navigateToHomePage, 7000); // Wait for the login to complete
-
-            setTimeout(function() {
-                console.log("Interacting with search bar...");
-                var initialSearchButton = document.querySelector('#quick-search-root > button > div > p');
-                console.log("Initial Search Button Found:", initialSearchButton != null);
-                if (initialSearchButton) {
-                    initialSearchButton.click();
-                    setTimeout(function() {
-                        var searchField = document.querySelector('#Request\\ \\#');
-                        console.log("Search Field Found:", searchField != null);
-                        if (searchField) {
-                            searchField.value = ticketId;
-                            searchField.dispatchEvent(new Event('input', { bubbles: true }));
-                            var searchButton = document.querySelector('#cdk-overlay-7 > form > div > div.box-border.flex.flex-row.justify-between.items-center.w-full.pb-\\[10px\\].lg\\:pb-\\[30px\\].px-\\[12px\\].sm\\:px-\\[25px\\] > div.flex.flex-row.gap-3.sm\\:gap-6.flex-grow.justify-end.items-center > button.flex.justify-center.items-center.sm\\:w-\\[132px\\].w-\\[112px\\].h-\\[35px\\].appearance-none.rounded.border-solid.border-2.border-primary.bg-primary.p-0.cursor-pointer.hover\\:bg-gray-500.hover\\:border-gray-500.text-white.font-rajdhani.font-semibold.uppercase');
-                            console.log("Search Button Found:", searchButton != null);
-                            if (searchButton) {
-                                searchButton.click();
-                            }
-                        }
-                    }, 5000); // Adjust timeout as needed to wait for the search field to appear
-                }
-            }, 15000); // Adjust timeout to wait for the home page to load
-        }
-
         window.onload = function() {
-            var ticketId = getQueryParam('ticketId');
-            console.log("Loaded ticket ID:", ticketId);
-            if (ticketId) {
-                console.log("Redirecting to U4ia.cloud login page...");
-                window.location.href = 'https://www.u4ia.cloud/';
-                setTimeout(function() {
-                    console.log("Starting ticket search process...");
-                    searchTicket(ticketId);
-                }, 5000);
-            } else {
-                document.body.innerHTML = "<h1>No ticket ID found in URL</h1>";
-            }
+            console.log("Navigating to U4ia website...");
+            window.location.href = 'https://www.u4ia.cloud/';
         }
     </script>
 </head>
 <body>
-    <h1>Loading...</h1>
+    <h1>Loading U4ia website...</h1>
 </body>
 </html>

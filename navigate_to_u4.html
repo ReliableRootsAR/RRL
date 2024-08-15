@@ -14,10 +14,23 @@
             if (allowButton) {
                 console.log("Allow Button Found, clicking...");
                 allowButton.click();
-                setTimeout(clickHomeButton, 3000);
+                setTimeout(openDrawer, 3000);
             } else {
                 console.log("Location permission prompt not found, retrying...");
                 setTimeout(checkForLocationPermission, 1000);
+            }
+        }
+
+        function openDrawer() {
+            console.log("Clicking drawer button...");
+            var drawerButton = document.querySelector('#homeContainer > app-navigation-bar > mat-toolbar > mat-toolbar-row > div > div.w-fit.basis-0.flex.flex-row.justify-start.items-center.lg\\:basis-\\[312px\\].max-w-\\[312px\\] > button > span.mat-mdc-button-touch-target');
+            console.log("Drawer Button Found:", drawerButton != null);
+            if (drawerButton) {
+                drawerButton.click();
+                setTimeout(clickHomeButton, 3000); // Proceed to click the home button
+            } else {
+                console.log("Drawer button not found, retrying...");
+                setTimeout(openDrawer, 1000);
             }
         }
 

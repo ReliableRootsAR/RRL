@@ -1,11 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Navigate to U4 Website</title>
+    <title>Navigate to U4 Website and Handle Location Permission</title>
     <script type="text/javascript">
+        function getQueryParam(param) {
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function checkForLocationPermission() {
+            console.log("Checking for location permission prompt...");
+            var allowButton = document.querySelector('button[aria-label="Allow"]');
+            var dontAllowButton = document.querySelector('button[aria-label="Don\'t Allow"]');
+            if (allowButton) {
+                console.log("Allow Button Found, clicking...");
+                allowButton.click();
+                setTimeout(proceedToHomePage, 3000);
+            } else if (dontAllowButton) {
+                console.log("Don't Allow Button Found, clicking...");
+                dontAllowButton.click();
+                setTimeout(proceedToHomePage, 3000);
+            } else {
+                console.log("Location permission prompt not found, retrying...");
+                setTimeout(checkForLocationPermission, 1000);
+            }
+        }
+
+        function proceedToHomePage() {
+            console.log("Proceeding to home page...");
+            // Add further navigation logic here
+        }
+
         window.onload = function() {
-            console.log("Navigating to U4ia website...");
-            window.location.href = 'https://www.u4ia.cloud/';
+            var ticketId = getQueryParam('ticketId');
+            console.log("Loaded ticket ID:", ticketId);
+            if (ticketId) {
+                console.log("Redirecting to U4ia.cloud login page...");
+                window.location.href = 'https://www.u4ia.cloud/';
+                setTimeout(checkForLocationPermission, 7000); // Wait for the login and redirection to complete
+            } else {
+                document.body.innerHTML = "<h1>No ticket ID found in URL</h1>";
+            }
         }
     </script>
 </head>

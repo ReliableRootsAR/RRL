@@ -22,7 +22,7 @@
 
         function searchTicket(ticketId) {
             console.log("Ticket ID:", ticketId);
-            setTimeout(navigateToHomePage, 5000); // Wait for the login to complete
+            setTimeout(navigateToHomePage, 7000); // Wait for the login to complete
 
             setTimeout(function() {
                 console.log("Interacting with search bar...");
@@ -44,15 +44,17 @@
                         }
                     }, 5000); // Adjust timeout as needed to wait for the search field to appear
                 }
-            }, 10000); // Adjust timeout to wait for the home page to load
+            }, 15000); // Adjust timeout to wait for the home page to load
         }
 
         window.onload = function() {
             var ticketId = getQueryParam('ticketId');
             console.log("Loaded ticket ID:", ticketId);
             if (ticketId) {
+                console.log("Redirecting to U4ia.cloud login page...");
                 window.location.href = 'https://www.u4ia.cloud/';
                 setTimeout(function() {
+                    console.log("Starting ticket search process...");
                     searchTicket(ticketId);
                 }, 5000);
             } else {

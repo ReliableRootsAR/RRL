@@ -1,0 +1,862 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="description" content="ReliaTXT — field-ready ticket ops for utility locating & contractors. Status, photos, GPS, collaboration, offline-first." />
+  <title>ReliaTXT — Field Ops That Don't Fall Apart</title>
+
+  <style>
+    :root{
+      --bg:#070b14;
+      --bg2:#0b1220;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.09);
+      --stroke:rgba(255,255,255,.12);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.72);
+      --muted2:rgba(255,255,255,.60);
+      --accent:#7c3aed;        /* purple */
+      --accent2:#22d3ee;       /* cyan */
+      --good:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --radius: 18px;
+      --radius2: 26px;
+      --max: 1120px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 20% -10%, rgba(124,58,237,.35), transparent 60%),
+        radial-gradient(900px 700px at 90% 0%, rgba(34,211,238,.22), transparent 55%),
+        radial-gradient(900px 700px at 30% 110%, rgba(34,211,238,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:0 18px}
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(7,11,20,.78), rgba(7,11,20,.35));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+      gap:12px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      text-decoration:none;
+    }
+    .logo{
+      width:38px; height:38px; border-radius:12px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.25), transparent 60%),
+        linear-gradient(135deg, rgba(124,58,237,1), rgba(34,211,238,1));
+      box-shadow: 0 10px 30px rgba(124,58,237,.25);
+      position:relative;
+      overflow:hidden;
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(circle at 30% 10%, rgba(255,255,255,.35), transparent 55%);
+      transform: rotate(18deg);
+    }
+    .brand b{
+      letter-spacing:.2px;
+      font-size:15px;
+    }
+    .brand small{
+      display:block; color:var(--muted2); font-size:12px; margin-top:1px;
+    }
+
+    .navlinks{
+      display:flex; align-items:center; gap:14px;
+    }
+    .navlinks a{
+      text-decoration:none;
+      color:var(--muted);
+      font-size:13px;
+      padding:9px 10px;
+      border-radius:12px;
+      border:1px solid transparent;
+      transition:.18s ease;
+    }
+    .navlinks a:hover{
+      color:var(--text);
+      border-color: rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      border-radius:14px;
+      padding:11px 14px;
+      text-decoration:none;
+      font-size:13px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      transition:.18s ease;
+      cursor:pointer;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:hover{ transform: translateY(-1px); border-color:rgba(255,255,255,.18); background:rgba(255,255,255,.06) }
+    .btn.primary{
+      border-color: rgba(124,58,237,.55);
+      background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(34,211,238,.75));
+      box-shadow: 0 18px 48px rgba(124,58,237,.28);
+    }
+    .btn.primary:hover{ filter: brightness(1.05); transform: translateY(-1px) }
+    .btn .dot{
+      width:8px; height:8px; border-radius:99px;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 0 0 6px rgba(255,255,255,.10);
+    }
+
+    /* hero */
+    .hero{ padding:54px 0 26px }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:22px;
+      align-items:stretch;
+    }
+    @media (max-width: 920px){
+      .heroGrid{ grid-template-columns: 1fr; }
+      .navlinks{ display:none; }
+    }
+    .chipRow{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:12px;
+      color:var(--muted);
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+    }
+    .chip .spark{
+      width:18px; height:18px;
+      border-radius:8px;
+      background: rgba(124,58,237,.22);
+      display:grid; place-items:center;
+      border:1px solid rgba(124,58,237,.35);
+    }
+    h1{
+      margin:0;
+      font-size:46px;
+      line-height:1.02;
+      letter-spacing:-.8px;
+    }
+    @media (max-width: 520px){
+      h1{ font-size:38px }
+    }
+    .sub{
+      margin:14px 0 18px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+      max-width:60ch;
+    }
+    .ctaRow{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:18px }
+    .ctaNote{
+      color:var(--muted2);
+      font-size:12px;
+    }
+
+    /* right panel */
+    .panel{
+      border-radius: var(--radius2);
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(900px 400px at 20% -20%, rgba(124,58,237,.30), transparent 55%),
+        radial-gradient(700px 500px at 120% 0%, rgba(34,211,238,.18), transparent 55%),
+        rgba(255,255,255,.04);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+      min-height: 360px;
+    }
+    .panelTop{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background: rgba(7,11,20,.25);
+    }
+    .panelTop b{ font-size:13px }
+    .lights{ display:flex; gap:8px; align-items:center }
+    .lights i{
+      width:10px; height:10px; border-radius:99px; display:inline-block;
+      background: rgba(255,255,255,.18);
+    }
+    .lights i:nth-child(1){ background: rgba(251,113,133,.70) }
+    .lights i:nth-child(2){ background: rgba(251,191,36,.70) }
+    .lights i:nth-child(3){ background: rgba(52,211,153,.70) }
+
+    .panelBody{ padding:16px }
+    .statGrid{
+      display:grid; grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .stat{
+      border-radius:16px;
+      padding:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    .stat small{ display:block; color:var(--muted2); font-size:11px; margin-bottom:6px }
+    .stat b{ font-size:16px; letter-spacing:-.2px }
+    .stat .bar{
+      height:8px; border-radius:99px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+      overflow:hidden;
+      margin-top:10px;
+    }
+    .stat .bar > span{
+      display:block; height:100%;
+      width:65%;
+      background: linear-gradient(90deg, rgba(124,58,237,1), rgba(34,211,238,1));
+    }
+    .timeline{
+      margin-top:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      overflow:hidden;
+    }
+    .tlRow{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:12px;
+      border-top:1px solid rgba(255,255,255,.06);
+    }
+    .tlRow:first-child{ border-top:none }
+    .badge{
+      font-family:var(--mono);
+      font-size:11px;
+      padding:5px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color:rgba(255,255,255,.85);
+      white-space:nowrap;
+    }
+    .tlRow p{ margin:0; font-size:12px; color:var(--muted); line-height:1.4 }
+    .tlRow p b{ color:var(--text); font-weight:600 }
+    .tlRow .ok{ color: var(--good) }
+    .tlRow .warn{ color: var(--warn) }
+    .tlRow .accent{ color: var(--accent2) }
+
+    /* sections */
+    section{ padding:34px 0 }
+    .sectionTitle{
+      display:flex; justify-content:space-between; align-items:flex-end; gap:16px;
+      margin-bottom:16px;
+    }
+    h2{
+      margin:0;
+      font-size:22px;
+      letter-spacing:-.3px;
+    }
+    .sectionTitle p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      max-width:64ch;
+      line-height:1.5;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+    }
+    @media (max-width: 920px){ .cards{ grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px){ .cards{ grid-template-columns: 1fr; } }
+
+    .card{
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      padding:14px;
+      box-shadow: 0 16px 46px rgba(0,0,0,.35);
+      transition:.18s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .card:hover{ transform: translateY(-2px); border-color: rgba(255,255,255,.16); background: rgba(255,255,255,.05) }
+    .icon{
+      width:40px; height:40px; border-radius:16px;
+      display:grid; place-items:center;
+      background: rgba(124,58,237,.18);
+      border:1px solid rgba(124,58,237,.28);
+      margin-bottom:10px;
+    }
+    .icon.cyan{
+      background: rgba(34,211,238,.14);
+      border-color: rgba(34,211,238,.24);
+    }
+    .icon.green{
+      background: rgba(52,211,153,.14);
+      border-color: rgba(52,211,153,.22);
+    }
+    .card h3{
+      margin:0 0 6px;
+      font-size:14px;
+      letter-spacing:-.1px;
+    }
+    .card p{ margin:0; color:var(--muted); font-size:13px; line-height:1.5 }
+
+    /* steps */
+    .steps{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+    }
+    @media (max-width: 900px){ .steps{ grid-template-columns: 1fr; } }
+    .step{
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      padding:14px;
+      display:flex; gap:12px; align-items:flex-start;
+    }
+    .num{
+      width:34px; height:34px; border-radius:14px;
+      display:grid; place-items:center;
+      font-family:var(--mono);
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      color: rgba(255,255,255,.85);
+      flex:0 0 auto;
+    }
+    .step b{ display:block; font-size:13px; margin-bottom:6px }
+    .step p{ margin:0; color:var(--muted); font-size:13px; line-height:1.5 }
+
+    /* form */
+    .formShell{
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .formTop{
+      padding:16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+      background: rgba(7,11,20,.22);
+    }
+    .formTop p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.5 }
+    form{ padding:16px; display:grid; gap:12px }
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:12px }
+    @media (max-width: 680px){ .row{ grid-template-columns: 1fr; } }
+
+    label{ font-size:12px; color:var(--muted2); display:block; margin-bottom:7px }
+    input, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      outline:none;
+      transition:.15s ease;
+      font-size:13px;
+    }
+    input:focus, textarea:focus{
+      border-color: rgba(34,211,238,.35);
+      box-shadow: 0 0 0 5px rgba(34,211,238,.10);
+    }
+    textarea{ min-height:110px; resize:vertical }
+    .formActions{
+      display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+      margin-top:6px;
+    }
+    .hint{
+      color:var(--muted2);
+      font-size:12px;
+      line-height:1.4;
+    }
+    .toast{
+      position:fixed;
+      right:18px; bottom:18px;
+      width:min(420px, calc(100% - 36px));
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(7,11,20,.86);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      padding:14px;
+      display:none;
+      z-index:80;
+    }
+    .toast.show{ display:block; animation: pop .18s ease-out }
+    @keyframes pop{ from{ transform: translateY(10px); opacity:0 } to{ transform: translateY(0); opacity:1 } }
+    .toast b{ font-size:13px }
+    .toast p{ margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.45 }
+
+    /* footer */
+    footer{
+      padding:28px 0 46px;
+      color:var(--muted2);
+      font-size:12px;
+    }
+    .foot{
+      display:flex; flex-wrap:wrap; gap:10px;
+      justify-content:space-between; align-items:center;
+      border-top:1px solid rgba(255,255,255,.08);
+      padding-top:18px;
+    }
+    .foot a{ color:rgba(255,255,255,.76); text-decoration:none; padding:6px 10px; border-radius:12px; }
+    .foot a:hover{ background: rgba(255,255,255,.04); }
+
+    /* sticky CTA */
+    .sticky{
+      position:fixed;
+      left:50%;
+      bottom:14px;
+      transform:translateX(-50%);
+      width:min(var(--max), calc(100% - 26px));
+      z-index:60;
+      pointer-events:none;
+    }
+    .stickyInner{
+      pointer-events:auto;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(7,11,20,.72);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      padding:12px 12px 12px 14px;
+    }
+    .stickyInner span{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.4;
+    }
+    .kbd{
+      font-family:var(--mono);
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color:rgba(255,255,255,.86);
+      margin-left:6px;
+      display:inline-block;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="wrap">
+      <div class="nav">
+        <a class="brand" href="#top" aria-label="ReliaTXT Home">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <b>ReliaTXT</b>
+            <small>Field-ready operations for 811 & locating</small>
+          </div>
+        </a>
+
+```
+    <div class="navlinks" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#proof">Why it's different</a>
+      <a href="#request">Request access</a>
+    </div>
+
+    <div style="display:flex; gap:10px; align-items:center;">
+      <!-- Update this to your real app URL when ready -->
+      <a class="btn" href="https://app.reliatxt.com" target="_blank" rel="noreferrer">
+        Sign in
+      </a>
+      <a class="btn primary" href="#request">
+        <span class="dot" aria-hidden="true"></span>
+        Request access
+      </a>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <main id="top" class="wrap">
+    <section class="hero">
+      <div class="heroGrid">
+        <div>
+          <div class="chipRow">
+            <span class="chip"><span class="spark">⚡</span> Offline-first. Built for the field.</span>
+            <span class="chip"><span class="spark">🛰️</span> GPS + photos that actually stick to the ticket.</span>
+            <span class="chip"><span class="spark">🧠</span> AI where it helps (not where it costs).</span>
+          </div>
+
+```
+      <h1>Field ops that don't fall apart at 6:30am.</h1>
+      <p class="sub">
+        ReliaTXT brings <b>tickets, status, photos, GPS, collaboration, and reporting</b> into one clean system—
+        designed for <b>utility locating, 811 workflows, contractors, and crews</b> who need proof, speed, and accountability.
+      </p>
+
+      <div class="ctaRow">
+        <a class="btn primary" href="#request">
+          <span class="dot" aria-hidden="true"></span>
+          Get a demo / request access
+        </a>
+        <a class="btn" href="#features">See what it does →</a>
+        <div class="ctaNote">No spam. We'll respond like humans.</div>
+      </div>
+    </div>
+
+    <aside class="panel" aria-label="Live-style preview">
+      <div class="panelTop">
+        <b>Today's Ops Snapshot</b>
+        <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+
+      <div class="panelBody">
+        <div class="statGrid">
+          <div class="stat">
+            <small>Open tickets</small>
+            <b>24</b>
+            <div class="bar"><span style="width:72%"></span></div>
+          </div>
+          <div class="stat">
+            <small>Proof coverage</small>
+            <b>96% <span style="color:var(--good); font-size:12px;">▲</span></b>
+            <div class="bar"><span style="width:88%"></span></div>
+          </div>
+          <div class="stat">
+            <small>Crews active</small>
+            <b>5</b>
+            <div class="bar"><span style="width:54%"></span></div>
+          </div>
+          <div class="stat">
+            <small>Avg. time-to-close</small>
+            <b>38m</b>
+            <div class="bar"><span style="width:61%"></span></div>
+          </div>
+        </div>
+
+        <div class="timeline" aria-label="Activity timeline">
+          <div class="tlRow">
+            <span class="badge">TKT-811-23901</span>
+            <p><b>Closed</b> with <span class="ok">7 photos</span> + <span class="accent">GPS trail</span></p>
+          </div>
+          <div class="tlRow">
+            <span class="badge">TKT-811-23944</span>
+            <p><b>Status</b> updated → <span class="warn">Need access</span> (notify contractor)</p>
+          </div>
+          <div class="tlRow">
+            <span class="badge">Route • North</span>
+            <p><b>Optimized</b> order for 9 stops (save ~ <span class="ok">18 min</span>)</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section id="features">
+  <div class="sectionTitle">
+    <div>
+      <h2>Everything crews actually need</h2>
+      <p>Built for phones in trucks, gloves on hands, and pressure on timelines. Keep it simple—or unlock the full suite when you're ready.</p>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="icon">🎫</div>
+      <h3>Ticket lifecycle that stays clean</h3>
+      <p>Status changes, notes, attachments, and history—organized so you can answer "what happened?" instantly.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon cyan">📸</div>
+      <h3>Photos tied to proof</h3>
+      <p>Capture once, attach forever. Optional "unlimited" photo workflows for high-proof clients.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon green">🛰️</div>
+      <h3>GPS tracking (when you want it)</h3>
+      <p>Track routes, validate presence, and correlate activity—without burning costs when it's off.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon cyan">🗺️</div>
+      <h3>Print overlays & map layers</h3>
+      <p>Bring prints and layers into the field view so crews stop switching tools and losing context.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon">🤝</div>
+      <h3>Cross-org collaboration</h3>
+      <p>Contractor ↔ locator visibility without data leaks. Share status or proofs—your choice.</p>
+    </div>
+
+    <div class="card">
+      <div class="icon green">📊</div>
+      <h3>Reporting & billing</h3>
+      <p>From production summaries to invoice-ready exports. Turn chaos into numbers that matter.</p>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="sectionTitle">
+    <div>
+      <h2>How it works</h2>
+      <p>Fast onboarding. Clear permissions. Minimal friction. Designed for multi-tenant operations from day one.</p>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="num">01</div>
+      <div>
+        <b>Connect your organization</b>
+        <p>Create your org, invite your crew, set roles, and turn on only the modules you need.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="num">02</div>
+      <div>
+        <b>Work tickets in the field</b>
+        <p>Status, photos, notes, GPS, and prints—offline capable, with sync that doesn't make you babysit.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="num">03</div>
+      <div>
+        <b>Get proof + insight</b>
+        <p>Close tickets with confidence, generate reports, and unlock premium tools when your operation demands it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="proof">
+  <div class="sectionTitle">
+    <div>
+      <h2>Why it's different</h2>
+      <p>Most tools are built for desks. ReliaTXT is built for the realities of field work: proof, accountability, and speed.</p>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="icon green">🔐</div>
+      <h3>Role-safe by design</h3>
+      <p>Permissions aren't an afterthought. Users only see what they're allowed to see—no accidental data exposure.</p>
+    </div>
+    <div class="card">
+      <div class="icon cyan">💸</div>
+      <h3>Cost-aware architecture</h3>
+      <p>Feature flags + lean background processing so you can keep costs down while you scale up.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🧩</div>
+      <h3>Modular, not bloated</h3>
+      <p>Start simple. Add GPS, reporting, prints, and advanced workflows when it's time—without rebuilding your system.</p>
+    </div>
+  </div>
+</section>
+
+<section id="request">
+  <div class="formShell">
+    <div class="formTop">
+      <div>
+        <h2 style="margin:0;">Request Access</h2>
+        <p>Tell us who you are and what you need. We'll follow up with the right setup (simple or full suite).</p>
+      </div>
+      <a class="btn" href="https://app.reliatxt.com" target="_blank" rel="noreferrer">Already a customer? Sign in →</a>
+    </div>
+
+    <form id="intakeForm" autocomplete="on">
+      <div class="row">
+        <div>
+          <label for="company">Company name</label>
+          <input id="company" name="company" placeholder="e.g., Northern Pipeline" required />
+        </div>
+        <div>
+          <label for="role">You are a…</label>
+          <input id="role" name="role" placeholder="Locator / Contractor / Owner / Ops Manager" required />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="name">Your name</label>
+          <input id="name" name="name" placeholder="First + last" required />
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@company.com" required />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="phone">Phone (optional)</label>
+          <input id="phone" name="phone" placeholder="(555) 123-4567" />
+        </div>
+        <div>
+          <label for="ticket">Example ticket # (optional)</label>
+          <input id="ticket" name="ticket" placeholder="e.g., 12345 or ABC-2026-001" />
+        </div>
+      </div>
+
+      <div>
+        <label for="notes">What do you want ReliaTXT to solve?</label>
+        <textarea id="notes" name="notes" placeholder="Routing? Proof photos? Contractor updates? Reporting/billing? GPS accountability?"></textarea>
+      </div>
+
+      <div class="formActions">
+        <button class="btn primary" type="submit">
+          <span class="dot" aria-hidden="true"></span>
+          Submit request
+        </button>
+
+        <div class="hint">
+          This demo form can email you instantly. Later you can wire it to Firebase Functions/Firestore.
+          <span class="kbd">⌘/Ctrl</span> + <span class="kbd">K</span> to jump to Request.
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="foot">
+    <div>© <span id="year"></span> ReliaTXT. Built for crews who need proof, not paperwork.</div>
+    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+      <a href="#features">Features</a>
+      <a href="#request">Request access</a>
+      <a href="https://app.reliatxt.com" target="_blank" rel="noreferrer">Sign in</a>
+    </div>
+  </div>
+</footer>
+```
+
+  </main>
+
+  <div class="sticky" aria-hidden="false">
+    <div class="stickyInner">
+      <span>
+        Want the fast path? Request access and tell us your workflow.
+        <span class="kbd">⌘/Ctrl</span> + <span class="kbd">K</span>
+      </span>
+      <a class="btn primary" href="#request"><span class="dot"></span> Request access</a>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <b id="toastTitle">Sent!</b>
+    <p id="toastBody">We'll reach out shortly. If your email client didn't open, you can copy the message.</p>
+  </div>
+
+  <script>
+    // tiny helpers
+    const $ = (s) => document.querySelector(s);
+
+    // footer year
+    $("#year").textContent = new Date().getFullYear();
+
+    // smooth scrolling for in-page links
+    document.addEventListener("click", (e) => {
+      const a = e.target.closest("a[href^='#']");
+      if(!a) return;
+      const href = a.getAttribute("href");
+      if(href.length < 2) return;
+      const el = document.querySelector(href);
+      if(!el) return;
+      e.preventDefault();
+      el.scrollIntoView({ behavior:"smooth", block:"start" });
+      history.replaceState(null, "", href);
+    });
+
+    // keyboard shortcut to jump to request
+    document.addEventListener("keydown", (e) => {
+      const isMac = navigator.platform.toUpperCase().includes("MAC");
+      const mod = isMac ? e.metaKey : e.ctrlKey;
+      if(mod && e.key.toLowerCase() === "k"){
+        e.preventDefault();
+        document.querySelector("#request").scrollIntoView({ behavior:"smooth", block:"start" });
+      }
+    });
+
+    // Demo intake: opens user's mail client. Replace later with fetch() to a Cloud Function.
+    const form = $("#intakeForm");
+    const toast = $("#toast");
+    const toastTitle = $("#toastTitle");
+    const toastBody = $("#toastBody");
+
+    function showToast(title, body){
+      toastTitle.textContent = title;
+      toastBody.textContent = body;
+      toast.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove("show"), 5200);
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      const lines = [
+        "New ReliaTXT Access Request",
+        "--------------------------------",
+        `Company: ${data.company || ""}`,
+        `Role: ${data.role || ""}`,
+        `Name: ${data.name || ""}`,
+        `Email: ${data.email || ""}`,
+        `Phone: ${data.phone || ""}`,
+        `Example Ticket: ${data.ticket || ""}`,
+        "",
+        "Notes:",
+        (data.notes || "").trim() || "(none)"
+      ];
+
+      const subject = encodeURIComponent(`ReliaTXT Access Request — ${data.company || "New"}`);
+      const body = encodeURIComponent(lines.join("\n"));
+
+      // Change this email to wherever you want intake to go for now:
+      const to = "johnithanfoster@gmail.com";
+      const mailto = `mailto:${to}?subject=${subject}&body=${body}`;
+
+      // best-effort mail client open
+      window.location.href = mailto;
+
+      showToast("Request prepared", "Your email client should open. If it doesn't, you can copy the details and send manually.");
+
+      // optional: clear form after a short delay
+      setTimeout(() => form.reset(), 700);
+    });
+  </script>
+
+</body>
+</html>
